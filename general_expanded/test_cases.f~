@@ -49,7 +49,7 @@ c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
           maxiter(i)= 0
         enddo
       
-        call rungeadd(aE,aI,bE,bI,cE,cI,nrk,bEH,bIH,icase,bD, !icase is the only input
+        call rungeadd(aE,aI,bE,bI,cE,cI,nrk,bEH,bIH,icase,bD,
      &   svpB(1,1,0),alpha,al3N,al3D,al4N,al4D,ipred)
  
         do iprob = 1,4                                 !   begin problems loop
