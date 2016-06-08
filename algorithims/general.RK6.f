@@ -2970,14 +2970,7 @@ c
          bi(i)  = be(i)
          bih(i) = beh(i)
        enddo
-c
 
-c
-       do i=1,ns
-         bi(i)  = be(i)
-         bih(i) = beh(i)
-       enddo
-c
        do i = 1,ns
          do j = 1,ns
            cE(i) = cE(i) + aE(i,j)
