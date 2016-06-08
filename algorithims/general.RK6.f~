@@ -1,5 +1,7 @@
       program test
 
+c     need to find way to keep ivarlen different for different cases
+
 c     program 1) van der Pol (Hairer II, pp 403)
 c     program 2) Pureshi and Russo 
 c     program 3) Dekker 7.5.2 pp. 215 (Kaps problem   : Index 1)
@@ -7,6 +9,8 @@ c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
 
       parameter(is=9,ivarlen=4)
       parameter(isamp=71,jmax=81,jactual=81)
+
+      parameter(rho=28.,sigma=10.,beta=8./3.)	!Case 5 paramters - Lorenz
 
       dimension aE(is,is),aI(is,is),bE(is),bI(is),cE(is),cI(is)
       dimension bEH(is),bIH(is),bD(is,4)
@@ -19,7 +23,7 @@ c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
       dimension predvec(ivarlen,is)
 
       dimension uvec(ivarlen),uveco(ivarlen),usum(ivarlen)
-      dimension uveciter(ivarlen),uorig(ivarlen)
+      dimension uveciter(ivarlen),uorig(ivarlen) 
       dimension uexact(ivarlen),Rnewton(ivarlen)
       dimension errvec(ivarlen),errvecT(ivarlen),tmpvec(ivarlen)
       dimension xjacinv(ivarlen,ivarlen)
@@ -453,8 +457,6 @@ c    vanderPol has 8 decades with 10 levels of epsilon per decade plus 1st pt of
           rewind(39)
           do i=1,81
             read(39,*)ExactTot(i,1),ExactTot(i,2)
-cc	    ExactTot(i,1)=10e-5
-cc	    ExactTot(i,2)=10e-5
             ExactTot(i,3) = 1./10**((i-1)/(10.))                  !  used for 81 values of ep
           enddo
 
@@ -547,12 +549,20 @@ c  IC: problem 1   :  equilibrium IC
 c  IC: problem 2   :  non-equilibrium IC
 c         uvec(1) = ?
 c         uvec(2) = ?
+	elseif(iprob.eq.5)then
+	
+	  dt = 0.5/10**((iDT-1.)/20.)
+	  nveclen = 2 !!!!!!!!!!! has something to do with jacobians, but not sure if it is relevant
+
+	  tfinal = 1.0 !!arbitrary
+	
 
         endif
 
       return
       end
-      
+
+c-------------------------------------------------------------
       subroutine RHS(uvec,res,dt,ep,ttI,iprob)
       parameter(is=9,ivarlen=4)
       dimension uvec(ivarlen),res(ivarlen)
@@ -574,6 +584,7 @@ c         uvec(2) = ?
       return
       end
 
+c--------------------------------------------------------------
       subroutine JACOB(uvec,xinv,dt,ep,akk,ttI,iprob,nvecLen)
       parameter(is=9,ivarlen=4)
       dimension uvec(ivarlen),xjac(ivarlen,ivarlen)
