@@ -11,7 +11,7 @@ c------------------------------------------------------------------c
       dimension bD(is,4),bdsum(is),alpha(is,is)
       dimension al3N(is,is),al3D(is,is)
       dimension al4N(is,is),al4D(is,is)
-c      dimension p(0:is,0:is),q(0:is)
+      dimension p(0:is,0:is),q(0:is)
       dimension svpB(is,is,0:is)
 
       do i=1,is

@@ -1,16 +1,17 @@
       program test_cases
 
-c     need to find way to keep ivarlen different for different cases
-
 c     program 1) van der Pol (Hairer II, pp 403)
 c     program 2) Pureshi and Russo 
 c     program 3) Dekker 7.5.2 pp. 215 (Kaps problem   : Index 1)
 c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
+c     WARNING: Kreiss has problem with algebraic variable
+c     program 5) Lorenz
 
       parameter(is=9,ivarlen=4)
       parameter(isamp=71,jmax=81,jactual=81)
 
-      parameter(rho=28.,sigma=10.,beta=8./3.)	!Case 5 paramters - Lorenz
+      integer cases 				!input range of runge kutta cases
+      integer problem				!input problem number
 
       dimension aE(is,is),aI(is,is),bE(is),bI(is),cE(is),cI(is)
       dimension bEH(is),bIH(is),bD(is,4)
@@ -37,8 +38,12 @@ c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
 
       write(*,*)'what is ipred?'
       read(*,*)ipred
+      write(*,*)'what is case?'
+      read(*,*)cases
+      write(*,*)'which problem?'
+      read(*,*)problem
 
-      do icase = 1,6                                     !   begin algorithms loop
+      do icase = cases,cases                                  !   begin algorithms loop
 
         icount = 0        !  cost counters
         jcount = 0        !  cost counters
@@ -52,7 +57,7 @@ c     program 4) Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
         call rungeadd(aE,aI,bE,bI,cE,cI,nrk,bEH,bIH,icase,bD, !icase is the only input
      &   svpB(1,1,0),alpha,al3N,al3D,al4N,al4D,ipred)
  
-        do iprob = 1,4                                 !   begin problems loop
+        do iprob = problem,problem                                !   begin problems loop
       
 c         loop over different values of stiffness epsilon 
 

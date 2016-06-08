@@ -25,7 +25,6 @@ c--------------------------------------------------------------
         xjac(1,2) = 0.-akk*dt/ep
         xjac(2,1) = 0.-akk*dt*(0)
         xjac(2,2) = 1.+akk*dt/ep
-      !problem 5 if 
       endif
 
       if(nvecLen.eq.2)then
