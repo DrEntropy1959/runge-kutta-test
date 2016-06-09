@@ -1,6 +1,3 @@
-
-c------------------------------------------------------------------c
-
       subroutine rungeadd(aE,aI,bE,bI,cE,cI,ns,bEH,bIH,icase,bD,
      &                    svpB,alpha,al3N,al3D,al4N,al4D,ipred)
       parameter(is=9)

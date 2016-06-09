@@ -3,6 +3,7 @@ c--------------------------------------------------------------
       parameter(is=9,ivarlen=4)
       dimension uvec(ivarlen),xjac(ivarlen,ivarlen)
       dimension xinv(ivarlen,ivarlen)
+      parameter(sigma=10.,rho=28.,beta=8./3.) !Lorenz constants for Prob. 5
 
    
       if(iprob.eq.1)then
@@ -24,8 +25,19 @@ c--------------------------------------------------------------
         xjac(1,1) = 1.-akk*dt
         xjac(1,2) = 0.-akk*dt/ep
         xjac(2,1) = 0.-akk*dt*(0)
-        xjac(2,2) = 1.+akk*dt/ep
-      !problem 5 if 
+        xjac(2,2) = 1.+akk*dt/ep !possible error here
+       elseif(iprob.eq.5)then
+        xjac(1,1) = 1.-akk*dt*(-sigma)/ep
+        xjac(1,2) = 0.-akk*dt*(sigma)/ep
+        xjac(1,3) = 0.-akk*dt*(0)/ep
+
+        xjac(2,1) = 0.-akk*dt*(rho-uvec(3))
+        xjac(2,2) = 1.-akk*dt*(-1.)
+        xjac(2,3) = 0.-akk*dt*(-uvec(1))
+
+        xjac(3,1) = 0.-akk*dt*(uvec(2))
+        xjac(3,2) = 0.-akk*dt*(uvec(1))
+        xjac(3,3) = 1.-akk*dt*(-beta)
       endif
 
       if(nvecLen.eq.2)then

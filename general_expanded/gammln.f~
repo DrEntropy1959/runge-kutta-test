@@ -1,4 +1,3 @@
-
       FUNCTION gammln(xx)
       REAL gammln,xx
       INTEGER j

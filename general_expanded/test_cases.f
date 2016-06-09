@@ -29,12 +29,15 @@ c     program 5) Lorenz
       dimension errvec(ivarlen),errvecT(ivarlen),tmpvec(ivarlen)
       dimension xjacinv(ivarlen,ivarlen)
 
-      dimension cost(isamp),error1(isamp),error2(isamp),sig(isamp)
-      dimension error1P(isamp),error2P(isamp)
+      dimension cost(isamp),sig(isamp)
 
-      dimension epsave(jmax),b1save(jmax),b2save(jmax)
-      dimension b1Psave(jmax),b2Psave(jmax)
-      dimension epsilon(30)
+      dimension error1(isamp,ivarlen),error1P(isamp,ivarlen)
+
+      dimension a(ivarlen*2),b(ivarlen*2),siga1(ivarlen*2)
+      dimension sigb1(ivarlen*2),chi2(ivarlen*2)
+
+      dimension b1save(jmax,ivarlen),b1Psave(jmax,ivarlen)
+      dimension epsave(jmax)
 
       write(*,*)'what is ipred?'
       read(*,*)ipred
@@ -65,11 +68,10 @@ c         loop over different values of stiffness epsilon
 
             itmp = 11 - jmax/jactual
             ep = 1./10**((jepsil-1)/(itmp*1.))                           !  used for 81 values of ep
-
-            write(50,*)'zone T = "ep = ',ep,'",'
-            write(51,*)'zone T = "ep = ',ep,'",'
-            write(52,*)'zone T = "ep = ',ep,'",'
-            write(53,*)'zone T = "ep = ',ep,'",'
+            
+            do ii = 1,ivarlen*2
+              write(49+ii,*)'zone T = "ep = ',ep,'",'
+            enddo
 
             do iDT = 1,isamp,1                                 !  timestep loop for vdP, Kaps, etc
 c           do iDT = 1,1,1                                     ! use to determine the exact solution
@@ -366,17 +368,13 @@ c                \sum_{j=1}^{s-1} \sum_{k=0}^{order} ( BBh_{ijk}*r^(k)) * U^{n,j
           enddo
           totalerror = sqrt(totalerror/nvecLen)
 
-          error1(iDT)  = alog10(tmpvec(1))
-          error2(iDT)  = alog10(tmpvec(2))
-          error1P(iDT) = alog10(errvecT(1))
-          error2P(iDT) = alog10(errvecT(2))
+          do ii = 1,nveclen
+            error1(iDT,ii)  = alog10(tmpvec(ii))
+            error1P(iDT,ii) = alog10(errvecT(ii))
+            write(49+ii,50)cost(iDT),error1(iDT,ii)
+            write(53+ii,50)cost(iDT),error1P(iDT,ii)
+          enddo
   
-          write(50,50)cost(iDT),error1(iDT)
-          write(51,50)cost(iDT),error2(iDT)
-          write(52,50)cost(iDT),error1P(iDT)
-          write(53,50)cost(iDT),error2P(iDT)
-
-
          enddo                                             !  end  loop over different dt
 
            jsamp = 41 
@@ -394,36 +392,40 @@ c          endif
            do i=1,isamp
              sig(i) = 0.0
            enddo
- 
-           call fit(cost,error1,jsamp,sig,0,a1,b1,siga1,sigb1,chi2,q)
-           call fit(cost,error2,jsamp,sig,0,a2,b2,siga2,sigb2,chi2,q)
-           call fit(cost,error1P,jsamp,sig,0,a3,b3,siga3,sigb3,chi2,q)
-           call fit(cost,error2P,jsamp,sig,0,a4,b4,siga3,sigb3,chi2,q)
-           write(*,60)ep,a1,b1,a2,b2,a3,b3,a4,b4
+
+!-- gather values for output
+	   do ii = 1,nveclen
+             call fit(cost,error1(:,ii),jsamp,sig,0,a(ii),
+     & b(ii),siga1(ii),sigb1(ii),chi2(ii),q)
+             call fit(cost,error1P(:,ii),jsamp,sig,0,a(ii+2),
+     & b(ii+2),siga1(ii+2),sigb1(ii+2),chi2(ii+2),q)
+	   enddo
+           
+!--output to terminal
+           write(*,60,advance="no")ep
+           do ii = 1,nveclen*2-1
+             write(*,60,advance="no")a(ii),b(ii)
+           enddo
+           write(*,60)a(nveclen*2),b(nveclen*2)
 
            epsave(jepsil) = log10(ep)
-           b1save(jepsil) = -b1
-           b2save(jepsil) = -b2
-           b1Psave(jepsil) = -b3
-           b2Psave(jepsil) = -b4
+           do ii = 1,nveclen
+            b1save(jepsil,ii) = -b(ii)
+            b1Psave(jepsil,ii) = -b(ii+2)
+           enddo
 
          enddo                                              !  end stiffness epsilon loop
 
-         write(35,*)'zone T = "Diff Var: Implicit",'
-         do j=1,jactual
-           write(35,50)epsave(j),b1save(j)
-         enddo
-         write(35,*)'zone T = "Alge Var: Implicit",'
-         do j=1,jactual
-           write(35,50)epsave(j),b2save(j)
-         enddo
-         write(35,*)'zone T = "Diff Var: Predicted",'
-         do j=1,jactual
-           write(35,50)epsave(j),b1Psave(j)
-         enddo
-         write(35,*)'zone T = "Alge Var: Predicted",'
-         do j=1,jactual
-           write(35,50)epsave(j),b2Psave(j)
+!--write to fort.35
+         do ii=1,nveclen
+           write(35,*)'zone T = "Var ',ii,': Implicit",'
+           do j=1,jactual
+             write(35,50)epsave(j),b1save(j,ii)
+           enddo
+           write(35,*)'zone T = "Var ',ii,': Predicted",'
+           do j=1,jactual
+             write(35,50)epsave(j),b1Psave(j,ii)
+           enddo
          enddo
 
         enddo                                            !  end problems loop
@@ -445,7 +447,6 @@ c          endif
        do istage = 2,nrk
          write(*,*) istage,stageE(istage),maxiter(istage),stageI(istage)
        enddo
-
        stop
        end
 
