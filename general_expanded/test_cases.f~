@@ -424,7 +424,7 @@ c          endif
            enddo
            write(35,*)'zone T = "Var ',ii,': Predicted",'
            do j=1,jactual
-             write(35,50)epsave(j),b1Psave(j,1)
+             write(35,50)epsave(j),b1Psave(j,ii)
            enddo
          enddo
 

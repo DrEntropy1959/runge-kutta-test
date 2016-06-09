@@ -69,8 +69,9 @@ c         loop over different values of stiffness epsilon
             itmp = 11 - jmax/jactual
             ep = 1./10**((jepsil-1)/(itmp*1.))                           !  used for 81 values of ep
             
-            do ii = 1,ivarlen*2
+            do ii = 1,ivarlen
               write(49+ii,*)'zone T = "ep = ',ep,'",'
+              write(59+ii,*)'zone T = "ep = ',ep,'",'
             enddo
 
             do iDT = 1,isamp,1                                 !  timestep loop for vdP, Kaps, etc
@@ -372,7 +373,7 @@ c                \sum_{j=1}^{s-1} \sum_{k=0}^{order} ( BBh_{ijk}*r^(k)) * U^{n,j
             error1(iDT,ii)  = alog10(tmpvec(ii))
             error1P(iDT,ii) = alog10(errvecT(ii))
             write(49+ii,50)cost(iDT),error1(iDT,ii)
-            write(53+ii,50)cost(iDT),error1P(iDT,ii)
+            write(59+ii,50)cost(iDT),error1P(iDT,ii)
           enddo
   
          enddo                                             !  end  loop over different dt
