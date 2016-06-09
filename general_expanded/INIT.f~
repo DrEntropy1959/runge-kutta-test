@@ -85,7 +85,7 @@ c         uvec(2) = ?
 
         elseif(iprob.eq.4)then          ! Dekker 7.5.1 pp. 214 (Kreiss' problem: Index 2)
  
-          dt = 0.5/10**((iDT-1.)/10.)
+          dt = 0.25/10**((iDT-1.)/20.)
           nvecLen = 2
 
           tfinal = 1.0
@@ -109,8 +109,7 @@ c         uvec(2) = ?
 	  dt = 0.5/10**((iDT-1.)/20.)
 	  nveclen = 3 
 
-	  tfinal = 1.0 !!arbitrary
-          dt = 0.5/10**((iDT-1.)/20.)
+	  tfinal = 2.0 !!arbitrary
 
 	  open(unit=39,file='exact.lorenz.data')		! need file still
 

@@ -110,7 +110,6 @@ c         uvec(2) = ?
 	  nveclen = 3 
 
 	  tfinal = 1.0 !!arbitrary
-          dt = 0.5/10**((iDT-1.)/20.)
 
 	  open(unit=39,file='exact.lorenz.data')		! need file still
 

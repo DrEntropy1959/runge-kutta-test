@@ -1,4 +1,4 @@
-SUBROUTINE fit(x,y,ndata,sig,mwt,a,b,siga,sigb,chi2,q)
+      SUBROUTINE fit(x,y,ndata,sig,mwt,a,b,siga,sigb,chi2,q)
       INTEGER mwt ,ndata
       REAL a,b,chi2,q,siga,sigb,sig(ndata),x(ndata),y(ndata)
       INTEGER i
@@ -55,5 +55,6 @@ SUBROUTINE fit(x,y,ndata,sig,mwt,a,b,siga,sigb,chi2,q)
         enddo 
         q=gammq(0.5*(ndata-2),0.5*chi2)
       endif
+      print *,ss,sx,sy,sxoss,b
       return
       end

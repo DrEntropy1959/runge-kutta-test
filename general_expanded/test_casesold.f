@@ -75,7 +75,7 @@ c         loop over different values of stiffness epsilon
             enddo
 
             do iDT = 1,isamp,1                                 !  timestep loop for vdP, Kaps, etc
-c            do iDT = 1,1,1                                     ! use to determine the exact solution
+c           do iDT = 1,1,1                                     ! use to determine the exact solution
 
             call INIT(uvec,uexact,dt,iDT,tfinal,ep,nvecLen,iprob)     !  initialize problem information
 
@@ -415,11 +415,7 @@ c          endif
             b1save(jepsil,ii) = -b(ii)
             b1Psave(jepsil,ii) = -b(ii+nveclen)
            enddo
-	! test outputs
-           print *,'x:',uvec(1)
-           print *,'y:',uvec(2)
-           print *,'z:',uvec(3)
-           write(33,*)uvec(1),uvec(2),uvec(3)
+
          enddo                                              !  end stiffness epsilon loop
 
 !--write to fort.35
